@@ -10,6 +10,7 @@ import AboutPage from "./pages/AboutPage";
 import BlogCreationPage from "./pages/BlogCreationPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import TempPage from "./temp/TempPage";
 
 const App = () => {
   const { lightMode, toggleMode } = useContext(BlogContext);
@@ -23,6 +24,8 @@ const App = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/temp" element={<TempPage />} />
+        
       </Routes>
     </div>
   );

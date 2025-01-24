@@ -11,10 +11,11 @@ import { HomeNavbarIcons } from "../assets";
 import { BlogContext } from "../context/BlogContext";
 
 const HompPageNavbar = () => {
-  const { lightMode, toggleMode, isSignedIn } = useContext(BlogContext);
+  const { lightMode, toggleMode, isSignedIn, navigate } =
+    useContext(BlogContext);
 
-  const signInHandler = () => {};
-  const signUpHandler = () => {};
+  const signInHandler = () => navigate("/signin");
+  const signUpHandler = () => navigate("/signup");
 
   const [openNav, setOpenNav] = React.useState(false);
 
@@ -113,6 +114,7 @@ const HompPageNavbar = () => {
             variant="text"
             size="sm"
             className="hidden lg:inline-block text-black bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-900"
+            onClick={signUpHandler}
           >
             <span>Sign up</span>
           </Button>
@@ -120,6 +122,7 @@ const HompPageNavbar = () => {
             variant="text"
             size="sm"
             className="hidden lg:inline-block text-black bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-900"
+            onClick={signInHandler}
           >
             <span>Sign in</span>
           </Button>
@@ -171,6 +174,7 @@ const HompPageNavbar = () => {
               variant="text"
               size="sm"
               className="text-blue-gray-900 bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-700 "
+              onClick={signInHandler}
             >
               <span>Sign In</span>
             </Button>
@@ -179,6 +183,7 @@ const HompPageNavbar = () => {
               variant="text"
               size="sm"
               className="text-blue-gray-900 dark:text-gray-200"
+              onClick={signUpHandler}
             >
               <span>Sign up</span>
             </Button>

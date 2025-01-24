@@ -3,7 +3,8 @@ import cors from "cors";
 import "dotenv/config";
 import connectDB from "./src/config/mongoDB.js";
 import blogRouter from "./src/routes/blogRoutes.js";
-import connectCloudinary from './src/config/cloudinary.js'
+import connectCloudinary from "./src/config/cloudinary.js";
+import userRouter from "./src/routes/userRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get("/", (req, res) => res.json({ message: "connected to api" }));
 
 // Routes
 app.use("/api/blog", blogRouter);
+app.use("/api/user", userRouter);
 
 const port = process.env.PORT || 4000;
 

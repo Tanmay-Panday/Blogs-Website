@@ -2,15 +2,15 @@ import blogPostModel from "../models/blogPostModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import upload from "../middleware/multer.js";
 
-//@description to create a blog consisting of title,content,image.
+//@description to create a blog consisting of title,content,image,user-email.
 //@type POST request
 //@route /api/blog/add-blog_post
 export const createBlog = async (req, res) => {
-  const { title, content } = req.body; // aquire blog title
+  const { title, content, email } = req.body; // aquire blog title
   const imageFile = req.file; // aquire image from form
 
-  if (!title || !content) {
-    // to check if either blog title or blog content are not present
+  if (!title || !content || !email) {
+    // to check if either blog title or blog content or user email are not present
     return res.status(400).json({ message: "Invalid blog credentials" });
   }
   try {
@@ -30,6 +30,7 @@ export const createBlog = async (req, res) => {
       title,
       content,
       image: imageUrl,
+      email
     };
 
     const blog = blogPostModel(blogData);

@@ -12,9 +12,14 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email : {
+    type: String,
+    required: true,
+    unique: true,
+  }
 });
 
 const blogPostModel =
-  mongoose.models.blogPost || mongoose.model("blog_post", blogPostSchema);
+  mongoose.models.blog_post || mongoose.model("blog_post", blogPostSchema);
 
 export default blogPostModel;
