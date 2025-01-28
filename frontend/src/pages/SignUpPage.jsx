@@ -1,7 +1,21 @@
-import { useState } from "react";
-import { Typography, Input, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
+import { useContext, useEffect, useState } from "react";
+import {
+  Typography,
+  Input,
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from "@material-tailwind/react";
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { BlogContext } from "../context/BlogContext";
+
+const checkEmailApi = "http://localhost:5000/api/user/get-user-by-email"; // API to check email existence
+const signUpApi = "http://localhost:5000/api/user/add-user"; // API to register user
+const signInApi = `http://localhost:5000/api/user/sign-in`; // to do sign in
 
 const SignUpPage = () => {
   const [passwordShown, setPasswordShown] = useState(false);
@@ -9,6 +23,8 @@ const SignUpPage = () => {
 
   const [open, setOpen] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+
+  const { setIsSignedIn, setUser, navigate } = useContext(BlogContext);
 
   const handleOpen = () => setOpen(!open);
 
@@ -22,6 +38,76 @@ const SignUpPage = () => {
     setOpen(false);
   };
 
+  // Form state
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // To show email error message
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      // Check if the email already exists
+      const response1 = await axios.post(checkEmailApi, { email });
+
+      if (!response1) {
+        console.log(`error in calling check email api`);
+      }
+      setErrorMessage(`email already in use`);
+      return;
+    } catch (error) {
+      // coming here means email is not used again
+    }
+
+    // if email does not exists then register the user
+    try {
+      const response2 = await axios.post(signUpApi, {
+        name: name,
+        password: password,
+        email: email,
+      });
+      if (!response2) {
+        console.log(`error in sending data through signup api`);
+      }
+
+      // user has been registered till here
+      // now sign-in 
+      try {
+        const response3 = await axios.post(signInApi, {
+          email,
+          password,
+        });
+  
+        if (response3.data) {
+          localStorage.setItem("token", response3.data.token); // Save token
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              email: response3.data.email,
+              admin: response3.data.admin,
+            }) // Save user details
+          );
+          setIsSignedIn(true);
+          setUser({ email: response3.data.email, admin: response3.data.admin });
+  
+          navigate("/blogs"); // as this is user sign up page only
+        }
+      } catch (error) {
+        setIsSignedIn(false);
+        console.error("Sign-in failed:", error);
+      }
+
+      console.log(`Sign up successful`);
+    } catch (error) {
+      console.log(`some error occured while registering the user ${error}`);
+    }
+  };
+
+  useEffect(() => {
+    setErrorMessage("");
+  }, [email, setEmail]);
+
   return (
     <section className="grid text-center h-screen items-center p-8 dark:bg-blue-gray-800">
       <div>
@@ -31,7 +117,10 @@ const SignUpPage = () => {
         <Typography className="mb-16 text-gray-600 font-normal text-[18px] dark:text-blue-gray-100">
           Nice to meet you! Enter your details to register.
         </Typography>
-        <form action="#" className="mx-auto max-w-[24rem] text-left">
+        <form
+          onSubmit={handleSubmit}
+          className="mx-auto max-w-[24rem] text-left"
+        >
           <div className="mb-6">
             <label htmlFor="name">
               <Typography
@@ -48,11 +137,13 @@ const SignUpPage = () => {
               name="name"
               placeholder="Your Name"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200 dark:text-blue-gray-100"
-              labelProps={{
-                className: "hidden",
-              }}
+              labelProps={{ className: "hidden" }}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
+
           <div className="mb-6">
             <label htmlFor="email">
               <Typography
@@ -69,11 +160,19 @@ const SignUpPage = () => {
               name="email"
               placeholder="name@mail.com"
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200 dark:text-blue-gray-100"
-              labelProps={{
-                className: "hidden",
-              }}
+              labelProps={{ className: "hidden" }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              error={!!errorMessage} // Show error styling
             />
+            {errorMessage && (
+              <Typography className="text-red-500 mt-1">
+                {errorMessage}
+              </Typography>
+            )}
           </div>
+
           <div className="mb-6">
             <label htmlFor="password">
               <Typography
@@ -86,9 +185,7 @@ const SignUpPage = () => {
             <Input
               size="lg"
               placeholder="********"
-              labelProps={{
-                className: "hidden",
-              }}
+              labelProps={{ className: "hidden" }}
               className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200 dark:text-blue-gray-100"
               type={passwordShown ? "text" : "password"}
               icon={
@@ -100,8 +197,12 @@ const SignUpPage = () => {
                   )}
                 </i>
               }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
+
           <div className="flex items-center mb-6">
             <input
               type="checkbox"
@@ -118,9 +219,17 @@ const SignUpPage = () => {
               Accept our Terms and Conditions
             </label>
           </div>
-          <Button size="lg" className="mt-6 bg-blue-800" fullWidth disabled={!termsAccepted}>
+
+          <Button
+            type="submit"
+            size="lg"
+            className="mt-6 bg-blue-800"
+            fullWidth
+            disabled={!termsAccepted}
+          >
             Sign Up
           </Button>
+
           <Typography
             variant="small"
             color="gray"
@@ -144,9 +253,9 @@ const SignUpPage = () => {
             Please read and accept our terms and conditions before proceeding.
           </Typography>
           <Typography className="mt-4 text-sm text-gray-600 dark:text-blue-gray-100">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque euismod
-            nulla vel nulla viverra, vel consequat sapien tincidunt. Cras mattis
-            orci vitae mi placerat, sed tempor odio egestas.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            euismod nulla vel nulla viverra, vel consequat sapien tincidunt.
+            Cras mattis orci vitae mi placerat, sed tempor odio egestas.
           </Typography>
         </DialogBody>
         <DialogFooter>

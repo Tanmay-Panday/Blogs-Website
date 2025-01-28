@@ -18,7 +18,7 @@ export const createBlog = async (req, res) => {
     if (imageFile) {
       const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
         resource_type: "image",
-        folder: process.env.CLOUDINARY_BLOG_IMAGES_FOLDER
+        folder: process.env.CLOUDINARY_BLOG_IMAGES_FOLDER,
       }); // upload image to cloudinary database with the help of multer to get url which can be used in mongodb
       imageUrl = imageUpload.secure_url; // extract the url from imageUpload object to be used in mongodb
     } else {
@@ -30,7 +30,7 @@ export const createBlog = async (req, res) => {
       title,
       content,
       image: imageUrl,
-      email
+      email,
     };
 
     const blog = blogPostModel(blogData);
@@ -102,13 +102,13 @@ export const deleteOneBlog = async (req, res) => {
     if (!blogDeleted) {
       return res.status(400).json({ message: "Blog not found" });
     }
-    
+
     // now delete image from cloudinary database
     const publicImageId = blogDeleted.image.split("/").pop().split(".")[0]; // extracting the cloudinary public id of the image url from deleted blog object and use it for getting public url of image i.e. CLOUDINARY_BLOG_IMAGES_FOLDER + publicImageId
-    
+
     const cloudinaryImageDeleted = await cloudinary.uploader.destroy(
       `${process.env.CLOUDINARY_BLOG_IMAGES_FOLDER}/${publicImageId}`
-    ); // await deletion of that image 
+    ); // await deletion of that image
     if (cloudinaryImageDeleted.result !== "ok") {
       console.log(
         `Error in deleting cloudinary image ${cloudinaryImageDeleted.error}`

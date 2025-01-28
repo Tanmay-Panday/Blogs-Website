@@ -9,6 +9,8 @@ import {
 
 import { HomeNavbarIcons } from "../assets";
 import { BlogContext } from "../context/BlogContext";
+import { Link } from "react-router-dom";
+import AuthMenu from "./AuthMenu";
 
 const HompPageNavbar = () => {
   const { lightMode, toggleMode, isSignedIn, navigate } =
@@ -38,10 +40,9 @@ const HompPageNavbar = () => {
           alt=""
           className={`w-5 h-5 ${lightMode ? "invert-0" : " invert"}`}
         />
-
-        <a href="/blogs" className="flex items-center">
+        <Link to="/blogs" className="flex items-center">
           Blogs
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -53,12 +54,12 @@ const HompPageNavbar = () => {
           alt=""
           className={`w-5 h-5 ${lightMode ? "invert-0" : " invert"}`}
         />
-        <a
-          href={isSignedIn ? "/blogWrite" : "/signin"}
+        <Link
+          to={isSignedIn ? "/blogWrite" : "/signin"}
           className="flex items-center"
         >
           Post
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -70,9 +71,9 @@ const HompPageNavbar = () => {
           alt=""
           className={`w-5 h-5 ${lightMode ? "invert-0" : " invert"}`}
         />
-        <a href="/about" className="flex items-center">
+        <Link to="/about" className="flex items-center">
           About
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -109,7 +110,7 @@ const HompPageNavbar = () => {
           BlogsWorld
         </Typography>
         <div className="hidden lg:block dark:text-gray-200">{navList}</div>
-        <div className="flex items-center gap-x-1">
+        {/* <div className="flex items-center gap-x-1">
           <Button
             variant="text"
             size="sm"
@@ -126,7 +127,8 @@ const HompPageNavbar = () => {
           >
             <span>Sign in</span>
           </Button>
-        </div>
+        </div> */}
+        <AuthMenu />
         <IconButton
           variant="text"
           className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
@@ -168,7 +170,7 @@ const HompPageNavbar = () => {
       <MobileNav open={openNav}>
         <div className="container mx-auto bg-blue-gray-50 dark:bg-blue-gray-900">
           <div className="text-blue-gray-900 dark:text-gray-200">{navList}</div>
-          <div className="flex items-center gap-x-1">
+          {/* <div className="flex items-center gap-x-1">
             <Button
               fullWidth
               variant="text"
@@ -187,7 +189,8 @@ const HompPageNavbar = () => {
             >
               <span>Sign up</span>
             </Button>
-          </div>
+          </div> */}
+          {/* <AuthMenu /> */}
         </div>
       </MobileNav>
     </Navbar>

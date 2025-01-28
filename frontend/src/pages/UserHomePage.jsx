@@ -11,7 +11,12 @@ const UserHomePage = () => {
       </header>
       {/* content section */}
       <main className="ContentSection flex items-center justify-center h-screen">
-        <p>content goes here</p>
+        {/* <div className="typewriter text-black dark:text-blue-gray-100">
+          <h1>
+            Rome wasn't build in 
+            one day neither are good blogs
+          </h1>
+        </div> */}
       </main>
       {/* footer section */}
       <footer className="FooterSection items-end">

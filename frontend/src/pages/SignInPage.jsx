@@ -6,38 +6,54 @@ import { BlogContext } from "../context/BlogContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+const signInApi = `http://localhost:5000/api/user/sign-in`;
+
 const SignInPage = () => {
   const [email, setEmail] = useState("abc2@gmail.com");
   const [password, setPassword] = useState("6789");
   const [passwordShown, setPasswordShown] = useState(false);
-  const [currentToken, setCurrentToken] = useState(""); // to store current token
-  const [loginResponse, setLoginResponse] = useState(""); // to display response of login under signin
 
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
 
+  const { setIsSignedIn, setUser, user, navigate } = useContext(BlogContext);
+
+  // to handle submit when sign in button is pressed
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/user/sign-in",
-        {
-          email: email,
-          password: password,
+      const response = await axios.post(signInApi, {
+        email,
+        password,
+      });
+
+      if (response.data) {
+        localStorage.setItem("token", response.data.token); // Save token
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: response.data.email,
+            admin: response.data.admin,
+          }) // Save user details
+        );
+        setIsSignedIn(true);
+        setUser({ email: response.data.email, admin: response.data.admin });
+
+        // Navigate based on user type
+        if (response.data.admin) {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/blogs");
         }
-      );
-      if (!response) {
-        throw new Error(` error at calling sign-in api `);
       }
-      console.log(response);
     } catch (error) {
-      console.log(`${error} some error happened`);
+      setIsSignedIn(false);
+      console.error("Sign-in failed:", error);
     }
   };
 
   return (
     <div>
-      <p>{currentToken}</p>
       <section className="grid text-center h-screen items-center p-8 dark:bg-blue-gray-800">
         <div>
           <Typography variant="h3" className="mb-2 dark:text-blue-gray-100">
@@ -151,7 +167,6 @@ const SignInPage = () => {
           </form>
         </div>
       </section>
-      <p className=" bg-blue-gray-300">the{loginResponse}</p>
     </div>
   );
 };

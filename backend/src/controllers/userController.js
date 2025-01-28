@@ -104,7 +104,7 @@ export const signIn = async (req, res) => {
     }
     // credentials verified till here
     // const { _id, email } = isUserExist;
-    const token = createToken(isUserExist.email,isUserExist.id);
+    const token = createToken(isUserExist.email, isUserExist.id);
 
     res.status(200).json({
       message: `Sign-in Successful`,
@@ -116,5 +116,38 @@ export const signIn = async (req, res) => {
     console.log(error);
 
     return res.status(400).json({ message: "user not found in the database" });
+  }
+};
+
+//@description to get credentials(name, admin status) of a user by his email-id
+//@type POST request
+//@route /api/user/get-user-by-email
+export const getOneUserCredentialsByEmail = async (req, res) => {
+  // get email from req body
+  const { email } = req.body;
+  // now find the user credentials name, admin status
+  try {
+    const userData = await userModel.findOne({ email }); // find data of user by email-id
+    if (!userData) {
+      // no user is found
+      return res.status(400).json({
+        message: `User with email-id ${email} does not exist in mongodb database`,
+      });
+    }
+
+    const credentials = {
+      name: userData.name,
+      admin: userData.admin,
+    };
+
+    res.status(200).json({
+      message: "user credentials fetched successfully from database",
+      credentials,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ message: "error in fetching user credentials from database" });
   }
 };
