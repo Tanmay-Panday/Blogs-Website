@@ -15,6 +15,7 @@ import UserHomePage from "./pages/UserHomePage";
 import { ToastContainer, toast } from 'react-toastify';
 import UserProfilePage from "./pages/UserProfilePage";
 import EditBlogPage from "./pages/EditBlogPage";
+import OneBlogExpandedPage from "./pages/OneBlogExpandedPage";
 
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/blog/:id" element={<OneBlogExpandedPage />} />
         <Route path="/edit-blog/:id" element={<EditBlogPage />} />
 
         {/* protected routes ( only signed in users can access ) */}

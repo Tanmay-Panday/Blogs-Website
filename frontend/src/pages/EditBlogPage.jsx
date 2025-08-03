@@ -38,7 +38,7 @@ const BlogCreationPage = () => {
     try {
       const response = await axios.get(`${getBlogPostByIdApi}/?id=${id}`);
       if (!response) {
-        log(`error in getting a response from getBlogPostById`);
+        console.log(`error in getting a response from getBlogPostById`);
         toast.error(`Data Does not exists in backend`);
       }
       const { title, content, image, email } = response.data.blogData;
