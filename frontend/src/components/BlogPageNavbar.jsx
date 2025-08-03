@@ -62,7 +62,6 @@ const BlogPageNavbar = ({ searchFilter, setSearchFilter }) => {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        <Link to="/temp"> Temp</Link>
         <MenuItem
           className="flex items-center gap-2 rounded hover:bg-red-500/10 focus:bg-red-500/10"
           onClick={handleSignOut}
@@ -91,7 +90,7 @@ const BlogPageNavbar = ({ searchFilter, setSearchFilter }) => {
           placeholder="Search blogs..."
           value={searchFilter}
           onChange={(e) => setSearchFilter(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-blue-gray-900 dark:text-white"
         />
         <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
       </li>
@@ -128,7 +127,7 @@ const BlogPageNavbar = ({ searchFilter, setSearchFilter }) => {
           href="#"
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
-          Blog App
+          Blogs World
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <IconButton

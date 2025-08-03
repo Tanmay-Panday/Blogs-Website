@@ -76,7 +76,7 @@ export const createAdmin = async (req, res) => {
   }
 };
 
-//@description to create credentials of admin having name, email-id,password
+//@description do sign-in
 //@type POST request
 //@route /api/user/sign-in
 export const signIn = async (req, res) => {
@@ -103,7 +103,6 @@ export const signIn = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
     // credentials verified till here
-    // const { _id, email } = isUserExist;
     const token = createToken(isUserExist.email, isUserExist.id);
 
     res.status(200).json({
@@ -149,5 +148,28 @@ export const getOneUserCredentialsByEmail = async (req, res) => {
     return res
       .status(400)
       .json({ message: "error in fetching user credentials from database" });
+  }
+};
+
+//@description to get number of users
+//@type GET request
+//@route /api/user/get-number-of-users
+export const getNumberOfUsers = async (req, res) => {
+  try {
+    const numberOfUsers = await userModel.countDocuments({ admin: false });
+    const numberOfAdmins = await userModel.countDocuments({ admin: true });
+    if (!numberOfUsers || !numberOfAdmins) {
+      res
+        .status(400)
+        .json({ message: "error in counting documents from mongodb database" });
+    }
+    res.status(200).json({
+      message: "number of users successfully fetched",
+      users: numberOfUsers,
+      admins: numberOfAdmins,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "error in getting number of users" });
   }
 };

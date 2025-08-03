@@ -3,7 +3,9 @@ import {
   createBlog,
   deleteOneBlog,
   getAllBlogs,
+  getAllBlogsByEmail,
   getOneBlog,
+  updateOneBlog,
 } from "../controllers/blogController.js";
 import uploadMiddleware from "../middleware/multer.js";
 import authUser from "../middleware/authUser.js";
@@ -23,7 +25,9 @@ blogRouter.post(
 // Image from form -> multer(used by cloudinary to upload image to cloudinary and get url) -> image url
 
 blogRouter.get("/get-blog_posts", getAllBlogs); // to get data of all blogs_posts
-blogRouter.get("/get-one-blog_post", getOneBlog); // to get a single blog from blogs
+blogRouter.get("/get-one-blog_post", getOneBlog); // to get a single blog of specified id from blogs
 blogRouter.delete("/delete-blog_post", deleteOneBlog); // to delete a blog_post of specified id
+blogRouter.post("/get-blogs-by-email", authUser, getAllBlogsByEmail); // to get all blogs of specified email-id
+blogRouter.post("/update-one-blog",uploadMiddleware.single("image"), updateOneBlog);
 
 export default blogRouter;

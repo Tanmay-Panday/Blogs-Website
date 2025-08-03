@@ -12,12 +12,17 @@ import TempPage from "./temp/TempPage";
 import Protected from "./utils/ProtectedRoutes";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import UserHomePage from "./pages/UserHomePage";
+import { ToastContainer, toast } from 'react-toastify';
+import UserProfilePage from "./pages/UserProfilePage";
+import EditBlogPage from "./pages/EditBlogPage";
+
 
 const App = () => {
   const { lightMode, toggleMode } = useContext(BlogContext);
 
   return (
     <div className={`${lightMode ? "" : "dark"}`}>
+      <ToastContainer />
       <Routes>
         {/* public routes ( everyone can access ) */}
         <Route path="/" element={<UserHomePage />} />
@@ -25,11 +30,14 @@ const App = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/edit-blog/:id" element={<EditBlogPage />} />
 
         {/* protected routes ( only signed in users can access ) */}
         <Route element={<Protected />}>
           <Route path="/blogWrite" element={<BlogCreationPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+
         </Route>
         
         <Route path="/temp" element={<TempPage />} />

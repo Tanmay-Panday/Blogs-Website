@@ -1,6 +1,5 @@
 import blogPostModel from "../models/blogPostModel.js";
 import { v2 as cloudinary } from "cloudinary";
-import upload from "../middleware/multer.js";
 
 //@description to create a blog consisting of title,content,image,user-email.
 //@type POST request
@@ -51,13 +50,35 @@ export const createBlog = async (req, res) => {
 export const getAllBlogs = async (req, res) => {
   try {
     const blogsArray = await blogPostModel.find(); // get array of all blogs in database
-
     res.status(200).json({ message: "Blogs have been fetched", blogsArray });
   } catch (error) {
     console.log(error);
     res
       .status(400)
       .json({ message: "An Error Occured while getting all blogs" });
+  }
+};
+
+//@description to get array of all blogs of a specific email-id.
+//@type POST request
+//@route /api/blog/get-blogs-by-email
+export const getAllBlogsByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "email-id not specified in body for blogs fetching" });
+    }
+    const blogsArray = await blogPostModel.find({ email }); // get array of all blogs with specific email-id from database
+
+    res.status(200).json({
+      message: "Blogs of specicic email-id have been fetched",
+      blogsArray,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "An Error Occured while fetching blogs" });
   }
 };
 
@@ -82,6 +103,65 @@ export const getOneBlog = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: "An Error occured while getting a blog" });
+  }
+};
+
+//@description to update a blog by its _id
+//@type POST  request
+//@route /api/blog/update-one-blog
+export const updateOneBlog = async (req, res) => {
+  const { id, title, content } = req.body; // acquire blog id from req body
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: "Blog Object id is not specified for updation" });
+  }
+  
+  const image = req.file;
+
+  try {
+    const prevBlogData = await blogPostModel.findById(id);
+    if (!prevBlogData) {
+      return res.status(400).json({ message: `Blog of id ${id} not found` });
+    }
+
+    let imageUrl = prevBlogData.image;
+    if (image) {
+      // now delete image from cloudinary database
+      const publicImageId = imageUrl.split("/").pop().split(".")[0];
+      const cloudinaryImageDeleted = await cloudinary.uploader.destroy(
+        `${process.env.CLOUDINARY_BLOG_IMAGES_FOLDER}/${publicImageId}`
+      );
+            
+      // now uploading new image to the database
+      const imageUpload = await cloudinary.uploader.upload(image.path, {
+        resource_type: "image",
+        folder: process.env.CLOUDINARY_BLOG_IMAGES_FOLDER,
+      });
+      imageUrl = imageUpload.secure_url;
+    }
+    const updatedBlogPostData = {
+      title: title || prevBlogData.title,
+      content: content || prevBlogData.content,
+      image: imageUrl,
+      email: prevBlogData.email,
+    };
+
+    const updateBlog = await blogPostModel.findByIdAndUpdate(
+      id,
+      updatedBlogPostData,
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: `Blog updated successfully and`,
+        updateBlog,
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "An Error occured while updating a blog" });
   }
 };
 

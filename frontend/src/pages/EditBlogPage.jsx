@@ -7,88 +7,106 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Spinner,
 } from "@material-tailwind/react";
 import { PencilIcon, PhotoIcon } from "@heroicons/react/24/solid";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { BlogContext } from "../context/BlogContext";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
-const blogPostApi = `http://localhost:5000/api/blog/add-blog_post`;
+const updateblogPostApi = `http://localhost:5000/api/blog/update-one-blog`;
+const getBlogPostByIdApi = `http://localhost:5000/api/blog/get-one-blog_post`;
 
 const BlogCreationPage = () => {
+  const { id } = useParams();
   const [blogImage, setBlogImage] = useState("");
   const [blogTitle, setBlogTitle] = useState("");
   const [blogContent, setBlogContent] = useState("");
   const [emailId, setEmailId] = useState("");
+  const [prevEmailId, setPrevEmailId] = useState("");
   const { navigate } = useContext(BlogContext);
-  const [loading, setLoading] = useState(false);
+
+  console.log("image", blogImage);
 
   const handleImageChange = (e) => {
     setBlogImage(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
-    setLoading(true);
-    e.preventDefault();
+  // get pervious data of the blog to be updated
+  const getPreviousBlogData = async () => {
     try {
-      const formData = new FormData();
-      formData.append("title", blogTitle);
-      formData.append("content", blogContent);
-      formData.append("image", blogImage);
-      formData.append("email", emailId);
-
-      const response = await axios.post(
-        "http://localhost:5000/api/blog/add-blog_post",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            token: localStorage.getItem("token"),
-          },
-        }
-      );
-
+      const response = await axios.get(`${getBlogPostByIdApi}/?id=${id}`);
       if (!response) {
-        console.log(`error in calling api`);
+        log(`error in getting a response from getBlogPostById`);
+        toast.error(`Data Does not exists in backend`);
       }
-      console.log(`blog posted on backend successfully`);
-      toast.success(`blog posted on backend successfully`);
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+      const { title, content, image, email } = response.data.blogData;
+      setBlogTitle(title);
+      setBlogContent(content);
+      setPrevEmailId(email); // extract email-id from blog-data
+      setBlogImage(image);
+      toast.success(`previous blog data fetched`);
     } catch (error) {
       console.log(error);
-      toast.error(`an error occured please try again later`);
-    } finally {
-      setLoading(false);
+      toast.error(`error in fetching blog. Please try again later`);
     }
   };
 
-  // get email id from decoded token
   useEffect(() => {
     const token = localStorage.getItem("token");
     const token_Decoded = jwtDecode(token);
-    setEmailId(token_Decoded.email);
-  }, []);
+    setEmailId(token_Decoded.email); // get current email-id from token
+    getPreviousBlogData();
+  }, []); // get previous blog data when page is loaded
+
+  const validateEmail = () => {
+    // check whether current email-id from token is eligible for updating the blog or not
+    return emailId === prevEmailId;
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    if (validateEmail()) {
+      // if email-id from token is validated for updation
+      try {
+        const formData = new FormData();
+
+        formData.append("id", id);
+        formData.append("title", blogTitle);
+        formData.append("content", blogContent);
+        formData.append("image", blogImage);
+        const response = await axios.post(updateblogPostApi, formData);
+        if (!response) {
+          console.log(`error in using updateBlogPostApi`);
+          toast.error(`Update Api Error. Please try again later`);
+        }
+        toast.success(`blog updated successfully`);
+        navigate(-1);
+      } catch (error) {
+        console.log(error);
+        toast.error(
+          `Error occured while blog updation. Please try again later`
+        );
+      }
+    } else {
+      toast.error(`invalid user for updating the blog`);
+    }
+  };
+
   return (
-    <div
-      className={`${
-        loading ? "opacity-75 animate-pulse" : ""
-      } flex justify-center items-center min-h-screen bg-gray-50 dark:bg-black  p-4`}
-    >
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-black  p-4">
       <Card className="w-full max-w-3xl shadow-lg dark:bg-darkmode-surface-a20">
         <CardHeader
           color="blue"
           className="flex justify-center items-center py-4 dark:bg-darkmode-primary-a0"
         >
           <Typography variant="h5" color="white">
-            Create Your Blog
+            Edit Your Blog
           </Typography>
         </CardHeader>
         <CardBody>
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleUpdateSubmit}>
             {/* Blog Title */}
             <div>
               <Input
@@ -97,7 +115,6 @@ const BlogCreationPage = () => {
                 value={blogTitle}
                 onChange={(e) => setBlogTitle(e.target.value)}
                 className=" dark:text-white"
-                disabled={loading}
                 required
               />
             </div>
@@ -109,7 +126,6 @@ const BlogCreationPage = () => {
                 value={blogContent}
                 onChange={(e) => setBlogContent(e.target.value)}
                 className="dark:text-white"
-                disabled={loading}
                 required
               />
             </div>
@@ -138,7 +154,6 @@ const BlogCreationPage = () => {
               <input
                 type="file"
                 id="blogThumbnail"
-                disabled={loading}
                 hidden
                 accept="image/png, image/jpeg, image/jpg, image/webp"
                 onChange={handleImageChange}
@@ -150,7 +165,7 @@ const BlogCreationPage = () => {
             {/* Email id being used */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-blue-gray-100">
-                @ email : {emailId}
+                @ email : {prevEmailId}
               </label>
             </div>
 
@@ -160,9 +175,8 @@ const BlogCreationPage = () => {
                 type="submit"
                 ripple={true}
                 className=" bg-blue-300 dark:bg-darkmode-primary-a0"
-                disabled={loading}
               >
-                {!loading ? <span>Post Blog</span> : <Spinner />}
+                Post Blog
               </Button>
             </div>
           </form>

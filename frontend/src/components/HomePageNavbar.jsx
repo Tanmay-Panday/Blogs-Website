@@ -110,24 +110,6 @@ const HompPageNavbar = () => {
           BlogsWorld
         </Typography>
         <div className="hidden lg:block dark:text-gray-200">{navList}</div>
-        {/* <div className="flex items-center gap-x-1">
-          <Button
-            variant="text"
-            size="sm"
-            className="hidden lg:inline-block text-black bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-900"
-            onClick={signUpHandler}
-          >
-            <span>Sign up</span>
-          </Button>
-          <Button
-            variant="text"
-            size="sm"
-            className="hidden lg:inline-block text-black bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-900"
-            onClick={signInHandler}
-          >
-            <span>Sign in</span>
-          </Button>
-        </div> */}
         <AuthMenu />
         <IconButton
           variant="text"
@@ -170,27 +152,6 @@ const HompPageNavbar = () => {
       <MobileNav open={openNav}>
         <div className="container mx-auto bg-blue-gray-50 dark:bg-blue-gray-900">
           <div className="text-blue-gray-900 dark:text-gray-200">{navList}</div>
-          {/* <div className="flex items-center gap-x-1">
-            <Button
-              fullWidth
-              variant="text"
-              size="sm"
-              className="text-blue-gray-900 bg-blue-gray-100 dark:text-gray-200 dark:bg-blue-gray-700 "
-              onClick={signInHandler}
-            >
-              <span>Sign In</span>
-            </Button>
-            <Button
-              fullWidth
-              variant="text"
-              size="sm"
-              className="text-blue-gray-900 dark:text-gray-200"
-              onClick={signUpHandler}
-            >
-              <span>Sign up</span>
-            </Button>
-          </div> */}
-          {/* <AuthMenu /> */}
         </div>
       </MobileNav>
     </Navbar>

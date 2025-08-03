@@ -4,6 +4,7 @@ import aboutWebsiteIcon from "../assets/aboutWebsiteIcon.svg";
 import WebsiteLogo from "../assets/websiteLogo.svg";
 import LightModeIcon from "../assets/sunIcon.svg";
 import DarkModeIcon from "../assets/nightIcon.svg";
+import HomePageBackgroundFeatherIcon from '../assets/feather.svg'
 
 const HomeNavbarIcons = {
   // icons to be used with home page navbar
@@ -14,4 +15,4 @@ const HomeNavbarIcons = {
   darkModeIcon: DarkModeIcon,
 };
 
-export { HomeNavbarIcons, WebsiteLogo };
+export { HomeNavbarIcons, WebsiteLogo, HomePageBackgroundFeatherIcon };
