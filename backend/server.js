@@ -11,12 +11,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- CORS Configuration ---
-// This is the new section you need to add/modify.
+const allowedOrigins = [
+  "https://blogs-website-frontend.vercel.app", // your production frontend
+  "http://localhost:5173"                      // local dev (optional)
+];
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
