@@ -23,9 +23,9 @@ const UserProfilePage = () => {
   const userEmail = user?.email;
 
   // API Endpoints
-  const getUserApi = "http://localhost:5000/api/user/get-user-by-email";
-  const getUserBlogsApi = "http://localhost:5000/api/blog/get-blogs-by-email";
-  const deleteBlogByIdApi = "http://localhost:5000/api/blog/delete-blog_post";
+  const getUserApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/user/get-user-by-email`;
+  const getUserBlogsApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/get-blogs-by-email`;
+  const deleteBlogByIdApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/delete-blog_post`;
 
   // a function to make sure that user can only delete his/her own blog and also give admin rights to delete any blog
   //@working: decodes local storage token to get user-email and then returns true if( blog_email === decodedToken.email  OR (email credentails aquired from decoded local-storage-token is admin)

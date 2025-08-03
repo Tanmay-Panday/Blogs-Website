@@ -29,7 +29,7 @@ const AdminDashboardTable = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const getAllBlogsApi = `http://localhost:5000/api/blog/get-blog_posts`;
+  const getAllBlogsApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/get-blog_posts`;
 
   const fetchAllBlogs = async () => {
     try {

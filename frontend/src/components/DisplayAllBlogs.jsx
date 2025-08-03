@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const getAllBlogsApi = `http://localhost:5000/api/blog/get-blog_posts`;
+const getAllBlogsApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/get-blog_posts`;
 
 const DisplayAllBlogs = ({ searchFilter }) => {
   const [allBlogsArray, setAllBlogsArray] = useState([]);

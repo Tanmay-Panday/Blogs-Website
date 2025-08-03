@@ -15,8 +15,8 @@ import { BlogContext } from "../context/BlogContext";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-const updateblogPostApi = `http://localhost:5000/api/blog/update-one-blog`;
-const getBlogPostByIdApi = `http://localhost:5000/api/blog/get-one-blog_post`;
+const updateblogPostApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/update-one-blog`;
+const getBlogPostByIdApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/get-one-blog_post`;
 
 const BlogCreationPage = () => {
   const { id } = useParams();

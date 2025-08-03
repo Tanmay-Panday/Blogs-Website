@@ -13,9 +13,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { BlogContext } from "../context/BlogContext";
 
-const checkEmailApi = "http://localhost:5000/api/user/get-user-by-email"; // API to check email existence
-const signUpApi = "http://localhost:5000/api/user/add-user"; // API to register user
-const signInApi = `http://localhost:5000/api/user/sign-in`; // to do sign in
+const checkEmailApi = "${import.meta.env.VITE_BACKEND_SERVER_URL}/user/get-user-by-email"; // API to check email existence
+const signUpApi = "${import.meta.env.VITE_BACKEND_SERVER_URL}/user/add-user"; // API to register user
+const signInApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/user/sign-in`; // to do sign in
 
 const SignUpPage = () => {
   const [passwordShown, setPasswordShown] = useState(false);

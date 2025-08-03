@@ -6,7 +6,7 @@ import { BlogContext } from "../context/BlogContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const signInApi = `http://localhost:5000/api/user/sign-in`;
+const signInApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/user/sign-in`;
 
 const SignInPage = () => {
   const [email, setEmail] = useState("abc2@gmail.com");

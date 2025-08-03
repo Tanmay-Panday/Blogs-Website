@@ -11,7 +11,7 @@ const UserAvatar = () => {
   const fetchUserData = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/user/get-user-by-email",
+        `${import.meta.env.VITE_BACKEND_SERVER_URL}/user/get-user-by-email`,
         { email: userEmailId } 
       );
 

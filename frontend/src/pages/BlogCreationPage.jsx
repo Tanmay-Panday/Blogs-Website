@@ -15,7 +15,7 @@ import axios from "axios";
 import { BlogContext } from "../context/BlogContext";
 import { toast } from "react-toastify";
 
-const blogPostApi = `http://localhost:5000/api/blog/add-blog_post`;
+const blogPostApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/add-blog_post`;
 
 const BlogCreationPage = () => {
   const [blogImage, setBlogImage] = useState("");
@@ -40,7 +40,7 @@ const BlogCreationPage = () => {
       formData.append("email", emailId);
 
       const response = await axios.post(
-        "http://localhost:5000/api/blog/add-blog_post",
+        `${import.meta.env.VITE_BACKEND_SERVER_URL}/blog/add-blog_post`,
         formData,
         {
           headers: {

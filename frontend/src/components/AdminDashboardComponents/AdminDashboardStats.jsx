@@ -7,7 +7,7 @@ const AdminDashboardStats = ({ numberOfBlogs }) => {
   const [numberOfUsers, setNumberOfUsers] = useState(0);
   const [numberOfAdmins, setNumberOfAdmins] = useState(0);
 
-  const getNumberOfUsersAndAdminsApi = `http://localhost:5000/api/user/get-number-of-users`;
+  const getNumberOfUsersAndAdminsApi = `${import.meta.env.VITE_BACKEND_SERVER_URL}/user/get-number-of-users`;
 
   const getNumberOfUsersAndAdmins = async () => {
     const response = await axios.get(getNumberOfUsersAndAdminsApi);
